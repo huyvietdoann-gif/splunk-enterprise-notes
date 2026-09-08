@@ -10,7 +10,7 @@ SPLUNK KHỞI ĐỘNG / RELOAD
           ▼
 Đọc và gộp cấu hình
           │
-          ├── system/default/       thấp nhất, không sửa
+          ├── system/default/       thấp nhất
           ├── apps/<app>/default/
           ├── apps/<app>/local/
           └── system/local/         cao nhất
