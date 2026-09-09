@@ -269,7 +269,7 @@ USER
 
 ```text
 CLUSTER MANAGER
-/opt/splunk/etc/manager-apps/
+/opt/splunk/etc/manager-apps/<app>/local/
         │
         ├── indexes.conf
         ├── props.conf
