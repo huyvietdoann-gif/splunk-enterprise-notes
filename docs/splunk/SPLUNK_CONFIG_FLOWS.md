@@ -2,7 +2,6 @@
 
 Tài liệu này hệ thống các mối quan hệ chính giữa file cấu hình Splunk theo từng luồng hoạt động.
 
-#Note
 ## props.conf
 Thường dùng để:
 - Chia luồng dữ liệu thành từng event.
