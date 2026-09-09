@@ -284,6 +284,14 @@ INDEXER PEERS
 └── Peer 3
 ```
 
+```text
+Nhiệm vụ chính của Cluster Manager:
+- Theo dõi và quản lý trạng thái các Indexer peer.
+- Quản lý việc đồng bộ dữ liệu.
+- Quản lý và cung cấp cấu hình cho các peer.
+- Cung cấp Indexer Discovery cho forwarder.
+```
+
 ### Luồng dữ liệu và replication
 
 ```text
