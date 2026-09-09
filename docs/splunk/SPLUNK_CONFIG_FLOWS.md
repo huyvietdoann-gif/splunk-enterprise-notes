@@ -263,74 +263,7 @@ SEARCH HEAD
 USER
 ```
 
-## 7. Luồng alert
-
-```text
-savedsearches.conf
-        │
-        ├── Câu search
-        ├── Lịch chạy
-        └── Điều kiện alert
-                  │
-                  ▼
-          SEARCH ĐƯỢC THỰC THI
-                  │
-                  ▼
-          Điều kiện đúng?
-             │          │
-            Không       Có
-             │          ▼
-             │   alert_actions.conf
-             │          │
-             │          ├── Gửi email
-             │          ├── Gọi webhook
-             │          └── Chạy script
-             ▼
-          Kết thúc
-```
-
-## 8. Luồng lookup
-
-```text
-USER CHẠY SEARCH
-        │
-        ▼
-props.conf
-        │
-        │ LOOKUP-xxx = tên_lookup ...
-        ▼
-transforms.conf
-        │
-        │ filename = asset.csv
-        ▼
-etc/apps/<app>/lookups/asset.csv
-        │
-        ▼
-THÊM THÔNG TIN VÀO EVENT
-```
-
-## 9. Luồng xác thực và phân quyền
-
-```text
-USER ĐĂNG NHẬP
-       │
-       ▼
-authentication.conf
-       │
-       │ Xác minh user là ai
-       ▼
-authorize.conf
-       │
-       ├── User thuộc role nào?
-       ├── Được search index nào?
-       ├── Có capability nào?
-       └── Được thực hiện hành động nào?
-                    │
-                    ▼
-              CHO PHÉP / TỪ CHỐI
-```
-
-## 10. Indexer Cluster
+## 7. Indexer Cluster
 
 ### Quản lý cấu hình peer
 
@@ -380,7 +313,7 @@ UF: outputs.conf
 
 Event không đi qua Cluster Manager.
 
-## 11. Indexer Discovery
+## 8. Indexer Discovery
 
 ```text
 UF: outputs.conf
@@ -404,7 +337,7 @@ Cluster Manager   → cung cấp danh sách peer
 UF                → tự gửi dữ liệu trực tiếp tới peer
 ```
 
-## 12. Search Head Cluster
+## 9. Search Head Cluster
 
 ### Cấu hình thành viên
 
@@ -449,7 +382,7 @@ SHC REPLICATION
 
 Deployer phân phối app quản trị; SHC replication đồng bộ nội dung do user tạo.
 
-## 13. Port và file điều khiển
+## 10. Port và file điều khiển
 
 ```text
 User ──8000──→ Splunk Web
@@ -471,7 +404,7 @@ Peer ──9887──→ Peer
 server.conf [clustering]
 ```
 
-## 14. Flow xử lý lỗi không có dữ liệu
+## 11. Flow xử lý lỗi không có dữ liệu
 
 ```text
 SEARCH KHÔNG CÓ EVENT
@@ -519,27 +452,46 @@ Search trực tiếp trên Indexer có thấy không?
                                            time range
 ```
 
-## 15. Ghi nhớ nhanh
+## 12. Ghi nhớ nhanh: chức năng và đường dẫn
+
+`<app>` là tên app chứa cấu hình. Với app do Deployment Server quản lý, sửa bản nguồn trong `deployment-apps`, không sửa bản đã nhận trên UF.
+
+| File | Chức năng | Máy sử dụng | Đường dẫn thường dùng |
+|---|---|---|---|
+| `inputs.conf` | Lấy dữ liệu vào | Windows UF | `C:\Program Files\SplunkUniversalForwarder\etc\apps\<app>\default\inputs.conf` |
+| `inputs.conf` | Mở cổng nhận dữ liệu `9997` | Indexer | `/opt/splunk/etc/apps/<app>/local/inputs.conf` — lab: `/opt/splunk/etc/apps/launcher/local/inputs.conf` |
+| `outputs.conf` | Gửi dữ liệu tới Indexer hoặc HF | Windows UF | `C:\Program Files\SplunkUniversalForwarder\etc\apps\<app>\default\outputs.conf` |
+| `deploymentclient.conf` | UF tìm Deployment Server | Windows UF | `C:\Program Files\SplunkUniversalForwarder\etc\system\local\deploymentclient.conf` |
+| `serverclass.conf` | Chọn UF thuộc nhóm nào và nhận app nào | Deployment Server | `/opt/splunk/etc/system/local/serverclass.conf` |
+| `props.conf` | Chia event, nhận timestamp và gọi transform | Indexer hoặc HF | `/opt/splunk/etc/apps/<app>/local/props.conf` |
+| `props.conf` | Trích xuất field lúc search | Search Head | `/opt/splunk/etc/apps/<app>/local/props.conf` |
+| `transforms.conf` | Lọc, che hoặc route dữ liệu | Indexer hoặc HF | `/opt/splunk/etc/apps/<app>/local/transforms.conf` |
+| `transforms.conf` | Trích xuất field lúc search | Search Head | `/opt/splunk/etc/apps/<app>/local/transforms.conf` |
+| `indexes.conf` | Quy định nơi lưu, dung lượng và thời gian giữ dữ liệu | Indexer | `/opt/splunk/etc/apps/<app>/local/indexes.conf` — lab: `/opt/splunk/etc/apps/search/local/indexes.conf` |
+| `distsearch.conf` | Search Head khai báo các Indexer để search | Search Head | `/opt/splunk/etc/system/local/distsearch.conf` |
+| `web.conf` | Cấu hình Splunk Web | Splunk Enterprise | `/opt/splunk/etc/system/local/web.conf` |
+| `server.conf` | Cấu hình instance, TLS và cluster | Splunk Enterprise | `/opt/splunk/etc/system/local/server.conf` |
+| `limits.conf` | Giới hạn tài nguyên và hoạt động search | Search Head hoặc Indexer | `/opt/splunk/etc/system/local/limits.conf` |
+
+### Đường dẫn khi triển khai tập trung
 
 ```text
-inputs.conf             → lấy dữ liệu vào
-outputs.conf            → gửi dữ liệu ra
-deploymentclient.conf   → client tìm Deployment Server
-serverclass.conf        → Deployment Server chọn client và app
-props.conf              → xác định cách xử lý dữ liệu
-transforms.conf         → biến đổi, lọc và route
-indexes.conf            → lưu và giữ dữ liệu
-distsearch.conf         → Search Head tìm Indexer
-savedsearches.conf      → report, lịch search và alert
-alert_actions.conf      → hành động khi alert kích hoạt
-authentication.conf     → xác minh user là ai
-authorize.conf          → xác định user được làm gì
-web.conf                → cấu hình Splunk Web
-server.conf             → cấu hình instance, TLS và cluster
-limits.conf             → giới hạn tài nguyên
+Deployment Server quản lý UF
+/opt/splunk/etc/deployment-apps/<app>/default/<file>.conf
+        │
+        └── triển khai tới UF:
+            C:\Program Files\SplunkUniversalForwarder\etc\apps\<app>\default\<file>.conf
+
+Cluster Manager quản lý Indexer peers
+/opt/splunk/etc/manager-apps/<app>/local/<file>.conf
+
+SHC Deployer quản lý Search Head Cluster
+/opt/splunk/etc/shcluster/apps/<app>/local/<file>.conf
 ```
 
-## 16. Lab hiện tại
+Không chỉnh file trong `etc/system/default/` hoặc `etc/apps/<app>/default/` của app cài sẵn. Đặt cấu hình tùy chỉnh trong `local/` hoặc trong app riêng.
+
+## 13. Lab hiện tại
 
 ```text
 WINDOWS UF: DESKTOP-TSA3GHF
