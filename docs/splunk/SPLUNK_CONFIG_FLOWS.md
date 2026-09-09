@@ -269,13 +269,6 @@ USER
 
 ```text
 CLUSTER MANAGER
-server.conf
-        │
-        ├── replication_factor
-        ├── search_factor
-        └── pass4SymmKey
-        │
-        ▼
 /opt/splunk/etc/manager-apps/
         │
         ├── indexes.conf
