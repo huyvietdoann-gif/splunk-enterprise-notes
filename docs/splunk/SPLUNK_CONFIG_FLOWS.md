@@ -2,6 +2,25 @@
 
 Tài liệu này hệ thống các mối quan hệ chính giữa file cấu hình Splunk theo từng luồng hoạt động.
 
+#Note
+## props.conf
+Thường dùng để:
+- Chia luồng dữ liệu thành từng event.
+- Nhận diện timestamp — thời gian xảy ra event.
+- Quy định định dạng thời gian.
+- Ghép nhiều dòng thành một event.
+- Chọn cách xử lý dựa trên source, host hoặc sourcetype.
+- Gọi cấu hình trong transforms.conf.
+
+## transforms.conf
+Thường thực hiện:
+- Lọc bỏ event.
+- Chuyển event sang index khác.
+- Thay đổi metadata như host, source, sourcetype.
+- Che dữ liệu nhạy cảm.
+- Route dữ liệu — điều hướng dữ liệu đến đích khác.
+- Trích xuất field khi search.
+
 ## 1. Thứ tự nạp cấu hình
 
 ```text
